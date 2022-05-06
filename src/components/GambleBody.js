@@ -8,7 +8,7 @@ import { ManageGamble } from './ManageGamble';
 
 export const GambleBody = ({ bet }) => {
 
-    const { betAddress, firstTeam, secondTeam, description, players, balance, manager, betState, winner, type, subtype, acceptTie, matchTimestamp } = bet;
+    const { betAddress, firstTeam, secondTeam, description, players, balance, manager, betState, winner, type, subtype, acceptTie, matchTimestamp, questionId, realityAddress } = bet;
 
     const [clipboard, setClipboard] = useState(false);
 
@@ -100,6 +100,8 @@ export const GambleBody = ({ bet }) => {
                 betAddress={ betAddress }
                 betState={ betState }
                 matchTimestamp={ matchTimestamp }
+                questionId={questionId}
+                realityAddress={realityAddress}
             />
             
         </main>

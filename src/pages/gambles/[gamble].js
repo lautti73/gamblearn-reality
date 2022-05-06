@@ -46,6 +46,8 @@ export async function getServerSideProps(context) {
         const acceptTie = await betInstance.acceptsTie();
         const matchTimestampBigInt = await betInstance.matchTimestamp();
         const matchTimestamp = matchTimestampBigInt.toNumber();
+        const questionId = await betInstance.questionId();
+        const realityAddress = await betInstance.realityContract();
         const bet = {
             betAddress,
             firstTeam,
@@ -59,7 +61,9 @@ export async function getServerSideProps(context) {
             type,
             subtype,
             acceptTie,
-            matchTimestamp
+            matchTimestamp,
+            questionId,
+            realityAddress
         }
         const betSerialized = JSON.parse(JSON.stringify(bet));
         

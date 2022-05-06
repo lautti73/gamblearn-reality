@@ -5,8 +5,9 @@ import betjson from '../../artifacts/contracts/GambleGame.sol/Bet.json'
 import { StoreContext } from '../store/storeProvider'
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 
-export const ManageGamble = ({betAddress, betState, matchTimestamp}) => {
+export const  ManageGamble = ({betAddress, betState, matchTimestamp, questionId, realityAddress}) => {
     const router = useRouter();
+    console.log(realityAddress)
     
     const [, setOpenConnect] = useContext(StoreContext);
     const [loadingGamble, setLoadingGamble] = useState(false)
@@ -27,7 +28,6 @@ export const ManageGamble = ({betAddress, betState, matchTimestamp}) => {
     const handleSubmit = async(e) => {
         e.preventDefault();
         const { name } = e.target;
-        
         if( account ) {
             try {
                 setLoadingGamble(true)
@@ -40,8 +40,9 @@ export const ManageGamble = ({betAddress, betState, matchTimestamp}) => {
             } catch (err) {
                 const error = JSON.parse(err.message.slice(err.message.indexOf("{"), err.message.indexOf("}") + 1) + "}}");
                 const sendError = err.message.length > 400 ? error.message : err.message
+                const url = `https://reality.eth.link/app/#!/question/${realityAddress}-${questionId}`
                 if (sendError == "execution reverted: question must be finalized") {
-
+                    window.open(url, '_blank').focus();
                 }
                 setTransactionStatus({
                     status: 400,
