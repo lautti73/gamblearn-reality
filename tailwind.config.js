@@ -17,7 +17,7 @@ module.exports = {
       'orange': '#F0B90B',
       'white': '#FFF',
       'black': '#000',
-      'grayfont': '#848c98'
+      'grayfont': '#848c98',
       },
     },
   },

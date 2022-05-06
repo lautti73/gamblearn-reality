@@ -51,7 +51,7 @@ contract BetFactory is Ownable {
         myBets[msg.sender].push(newBet);
     }
 
-    function getDeployedGambleGames() public view returns (Bet[] memory) {
+    function getDeployedBets() public view returns (Bet[] memory) {
         return deployedBets;
     }
 
@@ -79,13 +79,10 @@ contract Bet {
     bytes32 public questionIdTimestamp;
     bool public isMatchTimestampSet;
     bool public acceptsTie;
-    bool public isCompleted;
-    bool public isCanceled;
     uint public completedTimestamp;
     string public winner; 
     bytes32 public questionId;
     uint256 public realityFee;
-    
    
     mapping(address => mapping(string => uint)) public gambledFor;
 
@@ -94,6 +91,16 @@ contract Bet {
     mapping (string => uint) public balance;
     address public realityContract;
     uint public contractBalanceSnap;
+
+    enum State {
+        Open,
+        CheckingTimestamp,
+        CheckingWinner,
+        Completed,
+        Cancelled
+    }
+
+    State public betState;
 
     event CreatedGamble(
         address indexed gambler
@@ -139,10 +146,10 @@ contract Bet {
         _;
     }
 
-    modifier mustBeIncompleted() {
+    modifier mustBeOpen() {
         require(
-            !isCompleted,
-            "This gamble is already completed"
+            betState == State.Open,
+            "This gamble is not open, please check the state"
         );
         _;
     }
@@ -169,29 +176,28 @@ contract Bet {
         isMatchTimestampSet = false;
         acceptsTie = _acceptsTie;
         tie = "Tie";
-        isCompleted = false;
-        isCanceled= false;
-        winner = "undefined";
+        betState = State.Open;
         realityContract = 0xDf33060F476F8cff7511F806C72719394da1Ad64;
         realityFee = 2000000000000000;
     }
 
-    function enterGamble(string calldata teamGambled) public payable validTeam(teamGambled) mustBeIncompleted {
+    function enterGamble(string calldata teamGambled) public payable validTeam(teamGambled) mustBeOpen {
         require(
             msg.value >= 0.002 ether,
             "Minimum amount to gamble is 0.002 eth"
         );
-
-        require(matchTimestamp - 3600 > block.timestamp, "The gamble do not receive more bets");
-
-        if(gambles.length == 1) {
-            require(isMatchTimestampSet, "The match start timestamp is not checked yet");
+        
+        if (matchTimestamp - 3600 < block.timestamp) {
+            betState = State.CheckingWinner;
+            revert("The gamble do not receive more bets");
         }
+
         string memory us = "\u241f";
 
         if(balance[firstTeam] == 0 && balance[secondTeam] == 0 && balance[tie] == 0) {
             string memory question = string(abi.encodePacked("The match between ", firstTeam, " and ", secondTeam, ", with the following description: ", betDesc, ", will take place on which date?", us, "sports", us, "en"));
             questionIdTimestamp = RealityETH(realityContract).askQuestion{value: realityFee}(4, question, realityContract, 43200, 0, 0);
+            betState = State.CheckingTimestamp;
         }
 
         if(balance[teamGambled] == 0 && gambles.length > 0) {
@@ -216,12 +222,8 @@ contract Bet {
         emit CreatedGamble(msg.sender);
     }
 
-    // function setReality(address _address) public onlyOwner {
-    //     realityContract = _address;
-    // }
-
     function claimReward() public {
-        require(keccak256(abi.encode(winner)) != keccak256(abi.encode("undefined")), "Winner is not set");
+        require(betState == State.Completed, "Winner is not set");
         require(gambledFor[msg.sender][winner] > 0, "You have not reward to claim");
         uint256 amount = gambledFor[msg.sender][winner];
         gambledFor[msg.sender][winner] = 0;
@@ -231,7 +233,7 @@ contract Bet {
     }
 
     function setWinner() public {
-        require(keccak256(abi.encode(winner)) == keccak256(abi.encode("undefined")), "Winner is already set");
+        require(betState != State.Completed, "Winner is already set");
         require(isMatchTimestampSet, "The match start timestamp is not checked yet");
         bytes32 resultBytes = RealityETH(realityContract).resultFor(questionId);
         require(resultBytes != 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe, "There is no accepted answer yet");
@@ -244,23 +246,25 @@ contract Bet {
         } else if (resultNumber == 2) {
             winner = tie;
         }
+
         contractBalanceSnap = address(this).balance;
-        isCompleted = true;
+        betState = State.Completed;
         completedTimestamp = block.timestamp;
         emit SetWinner(winner);
     }
 
     function setTimestamp() public {
-        require(isMatchTimestampSet == false, "The timestamp is already set");
+        require(betState == State.CheckingTimestamp, "The checking timestamp period is not open");
         bytes32 resultBytes = RealityETH(realityContract).resultFor(questionIdTimestamp);
         require(resultBytes != 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe, "There is no accepted answer yet");
-        isMatchTimestampSet = true;
         uint256 resultNumber = uint256(resultBytes);
-        matchTimestamp = resultNumber;
-        emit SetTimestamp(resultNumber);
         if (resultNumber <= block.timestamp) {
             _cancelGamble();
         }
+        isMatchTimestampSet = true;
+        betState = State.Open;
+        matchTimestamp = resultNumber;
+        emit SetTimestamp(resultNumber);
     }
 
     function getGambles() public view returns (Gamble[] memory) {
@@ -275,11 +279,11 @@ contract Bet {
         _cancelGamble();
     }
 
-    function _cancelGamble() private mustBeIncompleted {
+    function _cancelGamble() private {
+        require(betState != State.Completed || betState != State.Cancelled, "The bet is already closed");
         contractBalanceSnap = address(this).balance;
         uint256 oldTotal =  address(this).balance + (2 * realityFee);
-        isCompleted = true;
-        isCanceled = true;
+        betState = State.Cancelled;
         completedTimestamp = block.timestamp;
         emit CancelGamble(block.timestamp);
         for( uint i = 0; i < gambles.length; i++) {
@@ -289,4 +293,13 @@ contract Bet {
         (bool sent2, ) = owner.call{value: address(this).balance }("");
         require(sent2, "Failed to send Ether");
     }
+
+    function setCheckingWinner() public mustBeOpen {
+        require(matchTimestamp - 3600 > block.timestamp, "You can not close de bet now");
+        betState = State.Completed;
+    }
+
+    // function setReality(address _address) public onlyOwner {
+    //     realityContract = _address;
+    // }
 }

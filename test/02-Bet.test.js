@@ -36,7 +36,6 @@ describe("Bet", function () {
 		await betMocked.setReality(realityeth.address);
 	});
 	describe("Enter Gamble", async() => {
-
 		it("Enters a gamble with a correct amount", async() => {
 			const tx = bet.enterGamble("KRU", {value: ethers.utils.parseEther('0.003')});
 			return expect(tx).to.emit(bet, 'CreatedGamble');
@@ -71,22 +70,30 @@ describe("Bet", function () {
 		it("Enters the second gamble with the timestamp not answered", async() => {
 			await bet.enterGamble("KRU", {value: ethers.utils.parseEther('0.002')});
 			const tx = bet.enterGamble("KRU", {value: ethers.utils.parseEther('0.003')});
-			return expect(tx).to.be.revertedWith("The match start timestamp is not checked yet");
+			return expect(tx).to.be.revertedWith("This gamble is not open, please check the state");
 		});
 		it("Enters the second gamble with the timestamp answered", async() => {
-			betMocked.setVariable("isMatchTimestampSet", true);
+			const timestamp = ethers.BigNumber.from(1683085128);
+			const timestamp32bytes = ethers.utils.hexZeroPad(timestamp.toHexString(), 32);
+			await realityeth.setVariable("result", timestamp32bytes);
 			await betMocked.enterGamble("KRU", {value: ethers.utils.parseEther('0.002')});
+			await betMocked.setTimestamp();
 			const tx = betMocked.enterGamble("KRU", {value: ethers.utils.parseEther('0.003')});
 			return expect(tx).to.emit(betMocked, 'CreatedGamble');
 		});
 	})
 	describe("Set timestamp", async() => {
 		it("Set timestamp when it is already set", async() => {
-			await betMocked.setVariable("isMatchTimestampSet", true);
+			await betMocked.enterGamble("KRU", {value: ethers.utils.parseEther('0.002')});
+			const timestamp = ethers.BigNumber.from(1684002823);
+			const timestamp32bytes = ethers.utils.hexZeroPad(timestamp.toHexString(), 32);
+			await realityeth.setVariable("result", timestamp32bytes);
+			await betMocked.setTimestamp();
 			const tx = betMocked.setTimestamp();
-			return expect(tx).to.be.revertedWith("The timestamp is already set");
+			return expect(tx).to.be.revertedWith("The checking timestamp period is not open");
 		});
 		it("Set timestamp when it's not set", async() => {
+			await betMocked.enterGamble("KRU", {value: ethers.utils.parseEther('0.002')});
 			const timestamp = ethers.BigNumber.from(1684002823);
 			const timestamp32bytes = ethers.utils.hexZeroPad(timestamp.toHexString(), 32);
 			await realityeth.setVariable("result", timestamp32bytes);
@@ -94,6 +101,7 @@ describe("Bet", function () {
 			return expect(tx).to.emit(betMocked, 'SetTimestamp').withArgs(1684002823);
 		});
 		it("Set timestamp when it's not set and it's minor than now", async() => {
+			await betMocked.enterGamble("KRU", {value: ethers.utils.parseEther('0.002')});
 			const timestamp = ethers.BigNumber.from(1649864622);
 			const timestamp32bytes = ethers.utils.hexZeroPad(timestamp.toHexString(), 32);
 			await realityeth.setVariable("result", timestamp32bytes);
@@ -103,19 +111,20 @@ describe("Bet", function () {
 	})
 	describe("Set winner", async() => {
 		it("Set winner when it's already set and timestamp is not set", async() => {
-			await betMocked.setVariable("winner", "KRU");
-			const winner = ethers.BigNumber.from(0);
-			const winner32bytes = ethers.utils.hexZeroPad(winner.toHexString(), 32);
-			await realityeth.setVariable("result", winner32bytes);
-			const tx = betMocked.setWinner();
-			return expect(tx).to.be.revertedWith("Winner is already set");
-		});
-		it("Set winner when it's already set and timestamp is set", async() => {
-			await betMocked.setVariable("winner", "KRU");
 			await betMocked.setVariable("isMatchTimestampSet", true);
 			const winner = ethers.BigNumber.from(0);
 			const winner32bytes = ethers.utils.hexZeroPad(winner.toHexString(), 32);
 			await realityeth.setVariable("result", winner32bytes);
+			await betMocked.setWinner();
+			const tx = betMocked.setWinner();
+			return expect(tx).to.be.revertedWith("Winner is already set");
+		});
+		it("Set winner when it's already set and timestamp is set", async() => {
+			await betMocked.setVariable("isMatchTimestampSet", true);
+			const winner = ethers.BigNumber.from(0);
+			const winner32bytes = ethers.utils.hexZeroPad(winner.toHexString(), 32);
+			await realityeth.setVariable("result", winner32bytes);
+			await betMocked.setWinner();
 			const tx = betMocked.setWinner();
 			return expect(tx).to.be.revertedWith("Winner is already set");
 		});
@@ -143,23 +152,47 @@ describe("Bet", function () {
 		});
 	})
 	describe("Claim reward", async() => {
-		it("Claims reward having won", async() => {
+		it("Claims reward having won", async() => {	
 			await betMocked.enterGamble("KRU", {value: ethers.utils.parseEther('0.002')});
+			await betMocked.setVariable("isMatchTimestampSet", true);
+			const winner = ethers.BigNumber.from(0);
+			const winner32bytes = ethers.utils.hexZeroPad(winner.toHexString(), 32);
+			await realityeth.setVariable("result", winner32bytes);
+			await betMocked.setWinner();
 			await betMocked.setVariable("winner", "KRU");
+			
 			const tx = betMocked.claimReward();
 			return expect(tx).to.emit(betMocked, 'RewardClaimed');
 		});
 		it("Claims reward not having won", async() => {
 			await betMocked.enterGamble("KRU", {value: ethers.utils.parseEther('0.002')});
+
+			await betMocked.setVariable("isMatchTimestampSet", true);
+			const winner = ethers.BigNumber.from(0);
+			const winner32bytes = ethers.utils.hexZeroPad(winner.toHexString(), 32);
+			await realityeth.setVariable("result", winner32bytes);
+			await betMocked.setWinner();
 			await betMocked.setVariable("winner", "FNC");
+
 			const tx = betMocked.claimReward();
 			return expect(tx).to.be.revertedWith("You have not reward to claim");
 		});
 		it("Claims reward having bet for both teams differents amounts", async() => {
-			await betMocked.setVariable("isMatchTimestampSet", true);
 			await betMocked.enterGamble("KRU", {value: ethers.utils.parseEther('0.002')});
+
+			const timestamp = ethers.BigNumber.from(1684002823);
+			const timestamp32bytes = ethers.utils.hexZeroPad(timestamp.toHexString(), 32);
+			await realityeth.setVariable("result", timestamp32bytes);
+			await betMocked.setTimestamp();
+
 			await betMocked.enterGamble("FNC", {value: ethers.utils.parseEther('0.003')});
+			
+			const winner = ethers.BigNumber.from(0);
+			const winner32bytes = ethers.utils.hexZeroPad(winner.toHexString(), 32);
+			await realityeth.setVariable("result", winner32bytes);
+			await betMocked.setWinner();
 			await betMocked.setVariable("winner", "FNC");
+
 			const tx = betMocked.claimReward();
 			return expect(tx).to.emit(betMocked, 'RewardClaimed').withArgs(deployer.address, ethers.utils.parseEther('0.003'));
 		});

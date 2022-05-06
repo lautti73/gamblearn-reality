@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from "next/link";
-import dynamic from 'next/dynamic';
 import { useRouter } from "next/router";
 import { ModalMenu } from './ModalMenu';
 import discordWhite from '../../public/discord-white.svg';
 import discordBlack from '../../public/discord-black.svg';
-
-const Connect = dynamic(
-	() => import('./Connect'),
-	{ ssr: false }
-  )
+import { Login } from './Login';
 
 export const Navbar = () => {
     
     const [openMenu, setOpenMenu] = useState(false);
     const router = useRouter();
+    
 
     return (
         <nav className='h-16 border-b border-neutral-200 border-solid shadow bg-blackbg'>
@@ -50,13 +46,14 @@ export const Navbar = () => {
                     <span className='block w-7 h-1 bg-whitefont mb-1' ></span>
                     <span className='block w-7 h-1 bg-whitefont'></span>
                 </li>
-                <Connect />
+                <Login lg/>
+                
                 { openMenu && 
                     <ModalMenu
                         setOpenMenu={ setOpenMenu  }   
                     >
                         <ul className='text-2xl font-medium flex flex-col items-center h-full'>
-                            <li className={`mt-16 md:mt-8 mb-14  hover:text-orange ${router.pathname == "/" ? "active" : ""}`}>
+                            <li className={`mt-8 md:mt-8 mb-14  hover:text-orange ${router.pathname == "/" ? "active" : ""}`}>
                                 <Link href={'/'}>
                                     <a className='lg:pb-5 pb-1 sm:px-2 px-0.5'>Home</a>
                                 </Link>
@@ -79,6 +76,7 @@ export const Navbar = () => {
                             <li className='hover:text-orange'>
                                 <a href='https://discord.gg/rtnFwG96rX' target='_blank' rel='noreferrer'><Image src={ discordBlack } alt="discord-icon" width={40}/></a>
                             </li >
+                            <Login/>
                         </ul>
                     </ModalMenu>
                 }
