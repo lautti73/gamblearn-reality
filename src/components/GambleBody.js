@@ -5,13 +5,14 @@ import { ProgressBar } from './ProgressBar';
 import { ClipboardCheckIcon, ClipboardCopyIcon } from '@heroicons/react/solid';
 import { ethers } from 'ethers';
 import { ManageGamble } from './ManageGamble';
+import { format } from 'path';
+import { formatEther } from 'ethers/lib/utils';
 
 export const GambleBody = ({ bet }) => {
-
     const { betAddress, firstTeam, secondTeam, description, players, balance, manager, betState, winner, type, subtype, acceptTie, matchTimestamp, questionId, realityAddress } = bet;
-
+    
     const [clipboard, setClipboard] = useState(false);
-
+    
     const State = {
         Open: 0,
         "Checking timestamp": 1,
@@ -19,21 +20,21 @@ export const GambleBody = ({ bet }) => {
         Completed: 3,
         Cancelled: 4
     }
-
+    
     let completedDateFormated;
     // if (isCompleted) {
-    //     const date = new Date(completedDate * 1000)
-    //     completedDateFormated = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes() < 10? '0' + date.getMinutes() : date.getMinutes()  }`
-    // }
-
+        //     const date = new Date(completedDate * 1000)
+        //     completedDateFormated = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes() < 10? '0' + date.getMinutes() : date.getMinutes()  }`
+        // }
+        
     let firstTeamCount = 0;
-
+    
     players.forEach(element => { 
         if (element[1] === firstTeam) {
             firstTeamCount += 1
         }
     });
-
+    
     let stateText;
     for (const s in State) {
         if (State[s] == betState) {
@@ -47,7 +48,7 @@ export const GambleBody = ({ bet }) => {
             <div className='relative flex flex-col items-center bg-white shadow-sm shadow-gray-300 rounded p-10 container sm:container'>
                 <p className='font-bold sm:text-5xl text-3xl mb-8 text-blackfont text-center'> { `${firstTeam} vs ${secondTeam}` } </p>
                 <p className='sm:text-lg mt-2 mb-2 text-center'> There are <span className='font-bold'>{ `${players.length} people` }</span> gambling </p>
-                <p className='sm:text-lg mb-2 text-center'> The pool reward for this is <span className='font-bold'>{ `${ethers.utils.parseEther(balance.toString())}`} <span className='text-sm font-bold'>ETH</span></span></p>
+                <p className='sm:text-lg mb-2 text-center'> The pool reward for this is <span className='font-bold'>{ `${ethers.utils.formatEther(balance)}`} <span className='text-sm font-bold'>ETH</span></span></p>
                 <div className='max-w-7xl mb-2 sm:px-10 px-2 flex flex-col text-center'>
                     <p><span className='sm:text-lg'>Description:</span> {`${ description }`}</p>
                 </div>

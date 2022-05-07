@@ -195,7 +195,7 @@ contract Bet {
         string memory us = "\u241f";
 
         if(balance[firstTeam] == 0 && balance[secondTeam] == 0 && balance[tie] == 0) {
-            string memory question = string(abi.encodePacked("When will take place the match between ", firstTeam, " and ", secondTeam, ", with the following description: \"", betDesc, "\"", us, "sports", us, "en"));
+            string memory question = string(abi.encodePacked("When will take place the match between ", firstTeam, " and ", secondTeam, ", with the following description: '", betDesc, "'", us, "sports", us, "en"));
             questionId = RealityETH(realityContract).askQuestion{value: realityFee}(4, question, realityContract, 43200, 0, 0);
             betState = State.CheckingTimestamp;
         }
@@ -203,9 +203,9 @@ contract Bet {
         if(balance[teamGambled] == 0 && gambles.length > 0) {
             string memory question;
             if (acceptsTie) {
-                question = string(abi.encodePacked("Which of the followings teams is the winner. The description is: \"", betDesc, "\"", us,"\"", firstTeam,"\",","\"", secondTeam,"\",", "\"Tie\"", us, "sports", us, "en"));
+                question = string(abi.encodePacked("Which of the followings teams is the winner. The description is: '", betDesc, "'", us,"\"", firstTeam,"\",","\"", secondTeam,"\",", "\"Tie\"", us, "sports", us, "en"));
             } else {
-                question = string(abi.encodePacked("Which of the followings teams is the winner. The description is: \"", betDesc, "\"", us,"\"", firstTeam,"\",","\"", secondTeam,"\"", us, "sports", us, "en"));
+                question = string(abi.encodePacked("Which of the followings teams is the winner. The description is: '", betDesc, "'", us,"\"", firstTeam,"\",","\"", secondTeam,"\"", us, "sports", us, "en"));
             }
             questionId = RealityETH(realityContract).askQuestion{value: realityFee}(2, question, realityContract, 86400, uint32(matchTimestamp), 0);
         }

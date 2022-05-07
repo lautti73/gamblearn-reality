@@ -46,8 +46,7 @@ export async function getServerSideProps() {
         const firstTeam = await betInstance.firstTeam();
         const secondTeam = await betInstance.secondTeam();
         const players = await betInstance.getGambles();
-        const balanceBigInt = await betInstance.getContractBalance();
-        const balance = balanceBigInt.toNumber();
+        const balance = await betInstance.getContractBalance();
         const betState = await betInstance.betState();
         const type = await betInstance.betType();
         const subtype = await betInstance.betSubtype();

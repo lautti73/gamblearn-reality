@@ -7,7 +7,7 @@ import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 
 export const  ManageGamble = ({betAddress, betState, matchTimestamp, questionId, realityAddress}) => {
     const router = useRouter();
-    console.log(realityAddress)
+    // console.log(realityAddress)
     
     const [, setOpenConnect] = useContext(StoreContext);
     const [loadingGamble, setLoadingGamble] = useState(false)

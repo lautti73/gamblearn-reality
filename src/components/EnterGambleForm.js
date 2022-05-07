@@ -5,6 +5,7 @@ import { useAccount, useContract, useSigner } from 'wagmi';
 import betjson from '../../artifacts/contracts/GambleGame.sol/Bet.json';
 import { StoreContext } from '../store/storeProvider';
 import { ethers } from 'ethers';
+import { ModalLoading } from './ModalLoading';
 
 export const EnterGambleForm = ({ betAddress, firstTeam, secondTeam, betState, State, acceptTie }) => {
 
@@ -79,7 +80,8 @@ export const EnterGambleForm = ({ betAddress, firstTeam, secondTeam, betState, S
                 const value = formData.amount.toString()
                 try {
                     setLoadingGamble(true)
-                    await betInstance.enterGamble( formData.team, {value: ethers.utils.parseEther(value), from: account.address})
+                    const tx = await betInstance.enterGamble( formData.team, {value: ethers.utils.parseEther(value), from: account.address})
+                    await tx.wait()
                     setTransactionStatus({
                         status: 200,
                         errorMessage: ''
@@ -136,6 +138,12 @@ export const EnterGambleForm = ({ betAddress, firstTeam, secondTeam, betState, S
                 <XCircleIcon className='w-6 h-6 mr-1 text-red'/>
                 <p className='text-red font-medium text-sm sm:text-base text-center'>{ transactionStatus.errorMessage }</p>
             </div>
+        }
+        {
+            loadingGamble &&
+            <ModalLoading 
+                setModalLoading={setLoadingGamble}
+            />
         }
         </>
     )
