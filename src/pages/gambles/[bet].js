@@ -26,7 +26,7 @@ const gamble = ({ betSerialized }) => {
 
 export async function getServerSideProps(context) {
 
-        const betAddress = context.params.gamble;
+        const betAddress = context.params.bet;
         const betInstance = new ethers.Contract(
             betAddress,
             betjson.abi,

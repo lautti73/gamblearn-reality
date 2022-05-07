@@ -28,14 +28,14 @@ export const Navbar = () => {
                         <a className='lg:pb-5 pb-1 sm:px-2 px-0.5'>How To Play</a>
                     </Link>
                 </li>
-                <li className={`mr-12 hidden lg:list-item hover:text-orange ${router.pathname == "/gambles" ? "active" : ""}`}>
-                    <Link href={'/gambles'}>
-                        <a className='lg:pb-5 pb-1 sm:px-2 px-0.5'>Gambles</a>
+                <li className={`mr-12 hidden lg:list-item hover:text-orange ${router.pathname == "/bets" ? "active" : ""}`}>
+                    <Link href={'/bets'}>
+                        <a className='lg:pb-5 pb-1 sm:px-2 px-0.5'>Bets</a>
                     </Link>
                 </li>
-                <li className={`mr-12 hidden lg:list-item hover:text-orange ${router.pathname == "/create-gamble" ? "active" : ""}`}>
-                    <Link href={'/create-gamble'}>
-                        <a className='lg:pb-5 pb-1 sm:px-2 px-0.5'>Create gambles</a>
+                <li className={`mr-12 hidden lg:list-item hover:text-orange ${router.pathname == "/create-bet" ? "active" : ""}`}>
+                    <Link href={'/create-bet'}>
+                        <a className='lg:pb-5 pb-1 sm:px-2 px-0.5'>Create bet</a>
                     </Link>
                 </li >
                 <li className='mr-8 2xl:mr-16 mt-2 hidden lg:list-item hover:text-orange ml-auto'>
@@ -63,14 +63,14 @@ export const Navbar = () => {
                                     <a className='lg:pb-5 pb-1 sm:px-2 px-0.5'>How To Play</a>
                                 </Link>
                             </li>
-                            <li className={`mb-14 hover:text-orange ${router.pathname == "/gambles" ? "active" : ""}`}>
-                                <Link href={'/gambles'}>
-                                    <a className='lg:pb-5 pb-1 sm:px-2 px-0.5'>Gambles</a>
+                            <li className={`mb-14 hover:text-orange ${router.pathname == "/bets" ? "active" : ""}`}>
+                                <Link href={'/bets'}>
+                                    <a className='lg:pb-5 pb-1 sm:px-2 px-0.5'>Bets</a>
                                 </Link>
                             </li>
-                            <li className={`mb-14 hover:text-orange ${router.pathname == "/create-gamble" ? "active" : ""}`}>
-                                <Link href={'/create-gamble'}>
-                                    <a className='lg:pb-5 pb-1 sm:px-2 px-0.5'>Create gambles</a>
+                            <li className={`mb-14 hover:text-orange ${router.pathname == "/create-bet" ? "active" : ""}`}>
+                                <Link href={'/create-bet'}>
+                                    <a className='lg:pb-5 pb-1 sm:px-2 px-0.5'>Create bet</a>
                                 </Link>
                             </li >
                             <li className='hover:text-orange'>

@@ -23,10 +23,10 @@ export const Footer = () => {
                     <Link href={ '/how-to-play' }><a>How to play</a></Link>
                 </li>
                 <li className='mb-8 sm:mb-0 sm:mr-8 hover:text-whitefont'>
-                    <Link href={ '/gambles' }><a>Gambles</a></Link>
+                    <Link href={ '/bets' }><a>Bets</a></Link>
                 </li>
                 <li className='mb-8 sm:mb-0 hover:text-whitefont'>
-                    <Link href={ '/create-gamble' }><a>Create gamble</a></Link>
+                    <Link href={ '/create-bet' }><a>Create bet</a></Link>
                 </li>
             </ul>
             <p className='text-center mt-12 text-sm'>GamblEarn © 2022</p>
