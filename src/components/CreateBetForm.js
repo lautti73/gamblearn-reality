@@ -137,7 +137,7 @@ export const CreateBetForm = () => {
 
                     <label className='w-full sm:w-auto sm:mb-6 mb-8 text-center sm:text-left '>
                         <span className='block mb-1.5 sm:mb-1 '>Team 1</span>
-                        <input type='text' className='block sm:w-56 w-full px-2 py-1 border border-solid border-gray-300 rounded text-sm' name='firstTeam' onChange={ handleChange }/>
+                        <input type='text' className='mr-12 block sm:w-56 w-full px-2 py-1 border border-solid border-gray-300 rounded text-sm' name='firstTeam' onChange={ handleChange }/>
                     </label>
                     <label className='w-full sm:w-auto sm:mb-6 mb-8 text-center sm:text-left'>
                         <span className='block mb-1.5 sm:mb-1'>Team 2</span>
@@ -197,26 +197,26 @@ export const CreateBetForm = () => {
                 { formErrors.matchTimestamp && <p className='text-red text-sm font-medium text-center mt-1 '> * { formErrors.matchTimestamp } </p>}
                 { formErrors.matchTimestampDiff && <p className='text-red text-sm font-medium text-center mt-1 '> * { formErrors.matchTimestampDiff } </p>}
                 { formErrors.acceptsTie && <p className='text-red text-sm font-medium text-center mb-4 mt-1 '> * { formErrors.acceptsTie } </p>}
+
+                {
+                    newBetStatus.status == 200 && 
+                    <div className='flex sm:justify-center sm:items-center mt-6'>
+                        <CheckCircleIcon className='w-6 h-6 mr-1 text-green'/>
+                    <p className='text-green font-medium text-sm sm:text-base text-center'>  {`Your gamble has been created succesfully, save the `} 
+                        <Link href={`gambles/${ newBetStatus.newBet }`}><a className='underline' target='_blank'>link</a></Link>!
+                    </p>
+                    </div>
+                } 
+                {
+                    newBetStatus.status == 400 && 
+                    <div className='flex sm:justify-center sm:items-center mt-6'>
+                        <XCircleIcon className=' w-6 h-6 mr-1 text-red'/>
+                        <p className='text-red font-medium text-sm sm:text-base text-center'>{ newBetStatus.errorMessage }</p>
+                    </div>
+                }
                 <button className='block mx-auto h-9 text-white font-medium bg-green hover:brightness-110 active:brightness-95 px-5 py-1 rounded mt-10'>Create gamble</button>
-               
-            </div>
-            {
-            newBetStatus.status == 200 && 
-            <div className='flex sm:justify-center sm:items-center mt-6'>
-                <CheckCircleIcon className='w-6 h-6 mr-1 text-green'/>
-            <p className='text-green font-medium text-sm sm:text-base text-center'>  {`Your gamble has been created succesfully, save the `} 
-                <Link href={`gambles/${ newBetStatus.newBet }`}><a className='underline' target='_blank'>link</a></Link>!
-            </p>
             </div>
             
-            } 
-            {
-            newBetStatus.status == 400 && 
-            <div className='flex sm:justify-center sm:items-center mt-6'>
-                <XCircleIcon className=' w-6 h-6 mr-1 text-red'/>
-                <p className='text-red font-medium text-sm sm:text-base text-center'>{ newBetStatus.errorMessage }</p>
-            </div>
-            }
             {
             loadingGamble &&
             <ModalLoading 

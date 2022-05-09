@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { INFURA_ID } from '../../.env';
 
-export const factoryContractAddress = '0x6ba8A7E675132f779e669C9b062A1aD5Df310E97';
+export const factoryContractAddress = '0x918Bd25AA3A2953708c7584F02152A59690e39EE';
 
 export default (() => {
     const projectId = INFURA_ID;
