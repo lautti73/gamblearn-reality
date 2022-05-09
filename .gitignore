@@ -44,5 +44,5 @@ typechain
 cache
 artifacts
 
-#envJson
-.env.json
+#envJs keys
+.env.js

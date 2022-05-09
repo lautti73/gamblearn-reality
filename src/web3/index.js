@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { INFURA_ID } from '../../.env.json';
+import { INFURA_ID } from '../../.env';
 
 export const factoryContractAddress = '0x6ba8A7E675132f779e669C9b062A1aD5Df310E97';
 
