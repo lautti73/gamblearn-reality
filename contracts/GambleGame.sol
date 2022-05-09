@@ -76,7 +76,6 @@ contract Bet {
     string public betType;
     string public betSubtype;
     uint256 public matchTimestamp;
-    bytes32 public questionIdTimestamp;
     bool public isMatchTimestampSet;
     bool public acceptsTie;
     uint public completedTimestamp;
@@ -255,7 +254,7 @@ contract Bet {
 
     function setTimestamp() public {
         require(betState == State.CheckingTimestamp, "The checking timestamp period is not open");
-        bytes32 resultBytes = RealityETH(realityContract).resultFor(questionIdTimestamp);
+        bytes32 resultBytes = RealityETH(realityContract).resultFor(questionId);
         require(resultBytes != 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe, "There is no accepted answer yet");
         uint256 resultNumber = uint256(resultBytes);
         if (resultNumber <= block.timestamp) {
