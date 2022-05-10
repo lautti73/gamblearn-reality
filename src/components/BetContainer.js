@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 
 import { ProgressBar } from './ProgressBar';
 
-export const GambleContainer = ({ bets }) => {
+export const BetContainer = ({ bets }) => {
 
     const { betAddress, firstTeam, secondTeam, players, balance, betState, type, subtype } = bets;
     // if (betState) return null;

@@ -5,7 +5,7 @@ import factoryJSON from '../../artifacts/contracts/GambleGame.sol/BetFactory.jso
 import betJSON from '../../artifacts/contracts/GambleGame.sol/Bet.json';
 import provider, { factoryContractAddress } from '../web3';
 import { Layout } from '../components/Layout';
-import { GambleContainer } from '../components/GambleContainer';
+import { BetPagination } from '../components/BetPagination';
 
 
 
@@ -13,15 +13,10 @@ const gambles = ({bets}) => {
     return (
         <Layout>
 
-            <main className='sm:container sm:mx-auto mx-5 mt-8 mb-24 flex flex-col lg:flex-row'>
-                {
-                    bets?.map( bet => 
-                        <GambleContainer 
-                            key={bet.betAddress}
-                            bets={bet}
-                        />
-                    )
-                }
+            <main className='sm:container sm:mx-auto mx-5 mt-8 mb-24 flex flex-col'>
+                <BetPagination 
+                    bets={bets}
+                />
             </main>
 
         </Layout>
