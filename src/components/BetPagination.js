@@ -1,13 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { StoreContext } from '../store/storeProvider';
 import { BetContainer } from './BetContainer'
 import { PageNumbers } from './PageNumbers';
 
-export const BetPagination = ({ bets }) => {
+export const BetPagination = () => {
 
+    const [{filteredBets: bets}] = useContext(StoreContext);
     const [pageNumber, setPageNumber] = useState(1);
 
     const [pagination, setPagination] = useState({
-        bets: bets,
+        bets,
         currentPage: pageNumber,
         betsPerPage: 2,
     });
@@ -20,15 +22,23 @@ export const BetPagination = ({ bets }) => {
       
     }, [pageNumber])
 
+    useEffect(() => {
+        setPagination({
+            ...pagination,
+            bets
+        })
+    }, [bets])
+    
+
     const { currentPage, betsPerPage } = pagination;
 
     const indexOfLastBet = currentPage * betsPerPage;
     const indexOfFirstBet = indexOfLastBet - betsPerPage;
-    const currentBets = pagination.bets.slice(indexOfFirstBet, indexOfLastBet);
-    const currentBetsReversed = currentBets.reverse();
+    const currentBets = pagination.bets?.slice(indexOfFirstBet, indexOfLastBet);
+    // const currentBetsReversed = currentBets?.reverse();
     
     const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(pagination.bets.length / betsPerPage); i++) {
+    for (let i = 1; i <= Math.ceil(pagination.bets?.length / betsPerPage); i++) {
         pageNumbers.push(i);
     }
 
@@ -45,9 +55,9 @@ export const BetPagination = ({ bets }) => {
         <>
         
         {
-            currentBets.map( bet =>
+            currentBets?.map( bet =>
                     <BetContainer
-                        key={bet.address}
+                        key={bet.betAddress}
                         bets={bet}
                     />
             )
@@ -59,7 +69,7 @@ export const BetPagination = ({ bets }) => {
             showPages.map( (number) => {
                 return (
                     <PageNumbers
-                        key={ number }
+                        key={ number.toString() }
                         id={ number }
                         pagination={ pagination }
                         setPageNumber={ setPageNumber }

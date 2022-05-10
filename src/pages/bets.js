@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useContract, useProvider } from 'wagmi';
 import { ethers } from 'ethers';
 import factoryJSON from '../../artifacts/contracts/GambleGame.sol/BetFactory.json';
@@ -6,11 +6,20 @@ import betJSON from '../../artifacts/contracts/GambleGame.sol/Bet.json';
 import provider, { factoryContractAddress } from '../web3';
 import { Layout } from '../components/Layout';
 import { BetPagination } from '../components/BetPagination';
-import { FilterBets } from '../components/FIlterBets';
+import { FilterBets } from '../components/FilterBets';
+import { StoreContext } from '../store/storeProvider';
 
 
 
 const gambles = ({bets}) => {
+
+    const [,, {loadBets}] = useContext(StoreContext);
+
+    useEffect(() => {
+        loadBets(bets)
+    }, [])
+    
+
     return (
         <Layout>
 
@@ -18,9 +27,7 @@ const gambles = ({bets}) => {
                 <FilterBets />
                 
                 <div className='flex flex-col flex-1'>
-                    <BetPagination 
-                        bets={bets}
-                    />
+                    <BetPagination bets={bets}/>
                 </div>
             </main>
 

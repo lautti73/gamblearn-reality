@@ -20,6 +20,7 @@ export const FilterBets = () => {
                     {
                         Object.keys(types).map( (el, i)  => {
                             return <FilterTypes 
+                                key={i}
                                 type={el}
                             />
                         })

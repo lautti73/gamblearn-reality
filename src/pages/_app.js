@@ -3,6 +3,7 @@ import { Provider, chain, defaultChains } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { WalletLinkConnector } from 'wagmi/connectors/walletLink'
+import StoreProvider from '../store/storeProvider';
 
 // API key for Ethereum node
 const infuraId = process.env.INFURA_ID
@@ -38,7 +39,9 @@ const connectors = ({ chainId }) => {
 function MyApp({ Component, pageProps }) {
   	return (
       <Provider autoConnect connectors={connectors}>
+        <StoreProvider>
           <Component {...pageProps} />
+        </StoreProvider>
       </Provider>
     )
 }
