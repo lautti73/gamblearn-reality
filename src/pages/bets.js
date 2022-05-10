@@ -6,6 +6,7 @@ import betJSON from '../../artifacts/contracts/GambleGame.sol/Bet.json';
 import provider, { factoryContractAddress } from '../web3';
 import { Layout } from '../components/Layout';
 import { BetPagination } from '../components/BetPagination';
+import { FilterBets } from '../components/FIlterBets';
 
 
 
@@ -13,10 +14,14 @@ const gambles = ({bets}) => {
     return (
         <Layout>
 
-            <main className='sm:container sm:mx-auto mx-5 mt-8 mb-24 flex flex-col'>
-                <BetPagination 
-                    bets={bets}
-                />
+            <main className='sm:container sm:mx-auto mx-5 mt-8 mb-24 flex flex-col lg:flex-row'>
+                <FilterBets />
+                
+                <div className='flex flex-col flex-1'>
+                    <BetPagination 
+                        bets={bets}
+                    />
+                </div>
             </main>
 
         </Layout>
