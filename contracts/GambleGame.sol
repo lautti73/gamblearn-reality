@@ -188,14 +188,14 @@ contract Bet {
         
         if (matchTimestamp - 3600 < block.timestamp) {
             betState = State.CheckingWinner;
-            revert("The gamble do not receive more bets");
+            revert("The bet do not receive more participants");
         }
 
         string memory us = "\u241f";
 
         if(balance[firstTeam] == 0 && balance[secondTeam] == 0 && balance[tie] == 0) {
             string memory question = string(abi.encodePacked("When will take place the match between ", firstTeam, " and ", secondTeam, ", with the following description: '", betDesc, "'", us, "sports", us, "en"));
-            questionId = RealityETH(realityContract).askQuestion{value: realityFee}(4, question, realityContract, 43200, 0, 0);
+            questionId = RealityETH(realityContract).askQuestion{value: realityFee}(4, question, realityContract, 300, 0, 0); //43200
             betState = State.CheckingTimestamp;
         }
 
@@ -206,7 +206,7 @@ contract Bet {
             } else {
                 question = string(abi.encodePacked("Which of the followings teams is the winner. The description is: '", betDesc, "'", us,"\"", firstTeam,"\",","\"", secondTeam,"\"", us, "sports", us, "en"));
             }
-            questionId = RealityETH(realityContract).askQuestion{value: realityFee}(2, question, realityContract, 86400, uint32(matchTimestamp), 0);
+            questionId = RealityETH(realityContract).askQuestion{value: realityFee}(2, question, realityContract, 300, uint32(matchTimestamp), 0); //86400
         }
 
         Gamble memory gamble = Gamble({
@@ -294,7 +294,7 @@ contract Bet {
     }
 
     function setCheckingWinner() public mustBeOpen {
-        require(matchTimestamp - 3600 > block.timestamp, "You can not close de bet now");
+        require(matchTimestamp - 3600 < block.timestamp, "You can not close de bet now");
         betState = State.Completed;
     }
 
