@@ -12,7 +12,7 @@ import { StoreContext } from '../store/storeProvider';
 
 const Bets = ({bets}) => {
 
-    const [,, {loadBets}] = useContext(StoreContext);
+    const [{bets: betsGlobal},, {loadBets}] = useContext(StoreContext);
 
     useEffect(() => {
         loadBets(bets)
@@ -26,6 +26,7 @@ const Bets = ({bets}) => {
                 <FilterBets />
                 
                 <div className='flex flex-col flex-1'>
+                    {betsGlobal.length == 0  && <p className='font-semibold text-center text-lg'>There is no bets</p>}
                     <BetPagination />
                 </div>
             </main>
