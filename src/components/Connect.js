@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import Image from 'next/image';
-import { useConnect } from 'wagmi';
+import { useAccount, useConnect } from 'wagmi';
 import { ModalConnect } from './ModalConnect';
 import walletConnect from '../../public/WalletConnect.svg';
 import metamask from '../../public/metamask-icon.png';
+import { StoreContext } from '../store/storeProvider';
 
 export default () => {
     const [{data, error}, connect] = useConnect();
+    const [{data: account}] = useAccount();
+    const [,, {setLogin}] = useContext(StoreContext)
 
+    useEffect(() => {
+        if (account) {
+            setLogin(true)
+        }
+    }, [account])
+    
         return (
             <>
                 <ModalConnect>

@@ -4,8 +4,8 @@ import { StoreContext } from '../store/storeProvider';
 
 export const ModalConnect = ({children }) => {
     const [store, setOpenConnect] = useContext(StoreContext);
-    const {setConnect} = store;
-    if (setConnect)
+    const {setConnect, logged} = store;
+    if (setConnect && !logged)
     return (
         <>  
             <div className='w-11/12 sm:w-2/3 md:w-7/12 h-3/4 md:h-4/6 fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 z-20 bg-white rounded text-black overflow-auto'>

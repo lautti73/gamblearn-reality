@@ -12,7 +12,7 @@ export const GambleBody = ({ bet }) => {
     const { betAddress, firstTeam, secondTeam, description, players, balance, manager, betState, winner, type, subtype, acceptTie, matchTimestamp, questionId, realityAddress } = bet;
     
     const [clipboard, setClipboard] = useState(false);
-    
+    console.log(matchTimestamp)
     const State = {
         Open: 0,
         "Checking timestamp": 1,

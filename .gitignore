@@ -46,3 +46,4 @@ artifacts
 
 #envJs keys
 .env.js
+/src/utils/database.*

@@ -3,6 +3,7 @@ import { filterType } from "../functions/filterType";
 
 const types = {
     setConnect: 'set - connect',
+    logged: 'login - bool',
     filterTypes: 'filter - type',
     filterSubtypes: 'filter - subtypes',
     loadBets: 'load - bets'
@@ -10,6 +11,7 @@ const types = {
 
 const initialStore = {
     openConnect: false,
+    logged: false,
     bets: [],
     filteredBets: [],
     filtersByType: [],
@@ -23,6 +25,11 @@ const storeReducer = (state, action) => {
                 ...state,
                 setConnect: action.payload
             }
+        case types.logged:
+            return {
+                ...state,
+                logged: action.payload
+            }
         case types.loadBets:
             return {
                 ...state,
@@ -34,7 +41,7 @@ const storeReducer = (state, action) => {
             let filteredBets = [];
 
             // If there is a filter with the same name (action.payload) applied, then remove it, else add it.
-            if (state.filtersByType.find( filter => filter == action.payload)) {
+            if (state.filtersByType.includes(action.payload)) {
                 updatedFilters = state.filtersByType.filter( filter => filter != action.payload)
             } else {
                 updatedFilters.push(action.payload)

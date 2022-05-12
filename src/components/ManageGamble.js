@@ -17,8 +17,8 @@ export const  ManageGamble = ({betAddress, betState, matchTimestamp, questionId,
         errorMessage: ''
     })
     
-    const [{ data: signer, isError, isLoading }] = useSigner();
-    const [{data: account, isErrorAcc, isLoadingAcc}] = useAccount()
+    const [{ data: signer}] = useSigner();
+    const [{data: account}] = useAccount();
     
     const betInstance = useContract({
         addressOrName: betAddress,
@@ -38,9 +38,14 @@ export const  ManageGamble = ({betAddress, betState, matchTimestamp, questionId,
                 })
                 router.replace(`/gambles/${gambleAddress}`)
             } catch (err) {
-                const error = JSON.parse(err.message.slice(err.message.indexOf("{"), err.message.indexOf("}") + 1) + "}}");
-                const sendError = err.message.length > 400 ? error.message : err.message
-                const url = `https://reality.eth.link/app/#!/question/${realityAddress}-${questionId}`
+                let error;
+                let sendError;
+                let url;
+                if (err) {
+                    error = JSON.parse(err.message.slice(err.message.indexOf("{"), err.message.indexOf("}") + 1) + "}}");
+                    sendError = err.message.length > 400 ? error.message : err.message
+                    url = `https://reality.eth.link/app/#!/question/${realityAddress}-${questionId}`
+                }
                 if (sendError == "execution reverted: question must be finalized") {
                     window.open(url, '_blank').focus();
                 }

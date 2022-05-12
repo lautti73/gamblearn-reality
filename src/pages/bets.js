@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from 'react'
-import { useContract, useProvider } from 'wagmi';
 import { ethers } from 'ethers';
 import factoryJSON from '../../artifacts/contracts/GambleGame.sol/BetFactory.json';
 import betJSON from '../../artifacts/contracts/GambleGame.sol/Bet.json';
@@ -11,7 +10,7 @@ import { StoreContext } from '../store/storeProvider';
 
 
 
-const gambles = ({bets}) => {
+const Bets = ({bets}) => {
 
     const [,, {loadBets}] = useContext(StoreContext);
 
@@ -27,7 +26,7 @@ const gambles = ({bets}) => {
                 <FilterBets />
                 
                 <div className='flex flex-col flex-1'>
-                    <BetPagination bets={bets}/>
+                    <BetPagination />
                 </div>
             </main>
 
@@ -77,4 +76,4 @@ export async function getServerSideProps() {
     }
   }
 
-export default gambles
+export default Bets
