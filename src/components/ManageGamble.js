@@ -4,6 +4,7 @@ import { useAccount, useContract, useSigner } from 'wagmi'
 import betjson from '../../artifacts/contracts/GambleGame.sol/Bet.json'
 import { StoreContext } from '../store/storeProvider'
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/solid';
+import { ModalLoading } from './ModalLoading'
 
 export const  ManageGamble = ({betAddress, betState, matchTimestamp, questionId, realityAddress}) => {
     const router = useRouter();
@@ -104,7 +105,7 @@ export const  ManageGamble = ({betAddress, betState, matchTimestamp, questionId,
             }
             {
             loadingGamble &&
-            <ModalLoading 
+            <ModalLoading
                 setLoadingGamble={setLoadingGamble}
             />
             }
