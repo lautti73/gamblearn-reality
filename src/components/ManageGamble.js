@@ -102,6 +102,12 @@ export const  ManageGamble = ({betAddress, betState, matchTimestamp, questionId,
                     <p className='text-red font-medium text-sm sm:text-base text-center'>{ transactionStatus.errorMessage }</p>
                 </div>
             }
+            {
+            loadingGamble &&
+            <ModalLoading 
+                setLoadingGamble={setLoadingGamble}
+            />
+            }
         </div>
     )
 }

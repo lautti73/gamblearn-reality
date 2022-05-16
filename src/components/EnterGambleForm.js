@@ -146,7 +146,7 @@ export const EnterGambleForm = ({ betAddress, firstTeam, secondTeam, betState, S
         {
             loadingGamble &&
             <ModalLoading 
-                setModalLoading={setLoadingGamble}
+                setLoadingGamble={setLoadingGamble}
             />
         }
         </>

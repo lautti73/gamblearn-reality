@@ -224,7 +224,7 @@ export const CreateBetForm = () => {
             {
             loadingGamble &&
             <ModalLoading 
-                setModalLoading={setLoadingGamble}
+                setLoadingGamble={setLoadingGamble}
             />
             }
         </form>
