@@ -25,7 +25,7 @@ export default async function handler(
                     return res.status(200).json(response.rows[0])
                 } 
                 const {account} = body
-                const query = 'SELECT * FROM rel_eoa_bets WHERE account = $1'
+                const query = 'SELECT DISTINCT * FROM rel_eoa_bets WHERE account = $1'
                 const values = [account]
                 const response = await conn.query(query, values)
                 return res.status(200).json(response.rows) 

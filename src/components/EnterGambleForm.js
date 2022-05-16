@@ -6,8 +6,9 @@ import betjson from '../../artifacts/contracts/GambleGame.sol/Bet.json';
 import { StoreContext } from '../store/storeProvider';
 import { ethers } from 'ethers';
 import { ModalLoading } from './ModalLoading';
+import { submitRel } from '../functions/relEoaBet';
 
-export const EnterGambleForm = ({ betAddress, firstTeam, secondTeam, betState, State, acceptTie }) => {
+export const EnterGambleForm = ({ betAddress, firstTeam, secondTeam, betState, State, acceptTie, manager }) => {
 
     const [, setOpenConnect] = useContext(StoreContext);
 
@@ -82,6 +83,9 @@ export const EnterGambleForm = ({ betAddress, firstTeam, secondTeam, betState, S
                     setLoadingGamble(true)
                     const tx = await betInstance.enterGamble( formData.team, {value: ethers.utils.parseEther(value), from: account.address})
                     await tx.wait()
+                    const isowner = manager == account.address ? 1 : 0
+                    const body = {account: account.address, bet: betAddress, isowner}
+                    submitRel(body)
                     setTransactionStatus({
                         status: 200,
                         errorMessage: ''

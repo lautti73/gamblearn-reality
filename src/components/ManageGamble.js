@@ -38,14 +38,10 @@ export const  ManageGamble = ({betAddress, betState, matchTimestamp, questionId,
                 })
                 router.replace(`/gambles/${gambleAddress}`)
             } catch (err) {
-                let error;
-                let sendError;
-                let url;
-                if (err) {
-                    error = JSON.parse(err.message.slice(err.message.indexOf("{"), err.message.indexOf("}") + 1) + "}}");
-                    sendError = err.message.length > 400 ? error.message : err.message
-                    url = `https://reality.eth.link/app/#!/question/${realityAddress}-${questionId}`
-                }
+                console.log(err)
+                let error = JSON.parse(err.message.slice(err.message.indexOf("{"), err.message.indexOf("}") + 1) + "}}");
+                let sendError = err.message.length > 400 ? error.message : err.message
+                let url = `https://reality.eth.link/app/#!/question/${realityAddress}-${questionId}`
                 if (sendError == "execution reverted: question must be finalized") {
                     window.open(url, '_blank').focus();
                 }

@@ -257,13 +257,13 @@ contract Bet {
         bytes32 resultBytes = RealityETH(realityContract).resultFor(questionId);
         require(resultBytes != 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe, "There is no accepted answer yet");
         uint256 resultNumber = uint256(resultBytes);
-        if (resultNumber <= block.timestamp) {
-            _cancelGamble();
-        }
         isMatchTimestampSet = true;
         betState = State.Open;
         matchTimestamp = resultNumber;
         emit SetTimestamp(resultNumber);
+        if (resultNumber <= block.timestamp) {
+            _cancelGamble();
+        }
     }
 
     function getGambles() public view returns (Gamble[] memory) {

@@ -10,6 +10,7 @@ import { factoryContractAddress } from '../web3';
 import betfactoryjson from '../../artifacts/contracts/GambleGame.sol/BetFactory.json'
 import { StoreContext } from '../store/storeProvider';
 import { useAccount, useContract, useSigner } from 'wagmi';
+import { submitRel } from '../functions/relEoaBet';
 
 
 export const CreateBetForm = () => {
@@ -101,12 +102,15 @@ export const CreateBetForm = () => {
             if(account) {
                 if(isValidated) {
                     try {
+                        
                         const matchTimestamp = parseInt(new Date(formData.matchTimestamp).getTime() / 1000)
                         const {firstTeam, secondTeam, description, type, subtype, acceptsTie} = formData
                         setLoadingGamble(true)
                         const newBet = await betFactory.createBet(firstTeam, secondTeam, description, type, subtype, matchTimestamp, acceptsTie)
                         const { events } = await newBet.wait()
                         const newBetAddress = events[0].args.newBet
+                        const body = {account: account.address, bet: newBetAddress, isowner: 1}
+                        submitRel(body);
                         setNewBetStatus({
                             status: 200,
                             newBet: newBetAddress,

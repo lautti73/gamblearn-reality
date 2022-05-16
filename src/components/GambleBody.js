@@ -68,6 +68,7 @@ export const GambleBody = ({ bet }) => {
                     State={ State }
                     betState={ betState }
                     acceptTie={acceptTie}
+                    manager={manager}
 
                 />
                 <p className='lg:absolute block lg:bottom-16 lg:right-10 font-bold sm:text-lg mt-6'>{ type }</p>
