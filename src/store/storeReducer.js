@@ -6,7 +6,8 @@ const types = {
     logged: 'login - bool',
     filterTypes: 'filter - type',
     filterSubtypes: 'filter - subtypes',
-    loadBets: 'load - bets'
+    loadBets: 'load - bets',
+    filterOwner: 'filter - owner'
 }
 
 const initialStore = {
@@ -15,7 +16,9 @@ const initialStore = {
     bets: [],
     filteredBets: [],
     filtersByType: [],
-    filtersBySubtype: []
+    filtersBySubtype: [],
+    ownerFilteredBets: [],
+    filterOwner: false,
 }
 
 const storeReducer = (state, action) => {
@@ -34,7 +37,8 @@ const storeReducer = (state, action) => {
             return {
                 ...state,
                 bets: action.payload,
-                filteredBets: action.payload
+                filteredBets: action.payload,
+                ownerFilteredBets: action.payload
             }
         case types.filterTypes: {
             let updatedFilters = [...state.filtersByType];
@@ -82,6 +86,19 @@ const storeReducer = (state, action) => {
                 ...state,
                 filtersBySubtype: updatedFilters,
                 filteredBets
+            }
+        }
+        case types.filterOwner: {
+            let ownerFilteredBets = state.filteredBets;
+            if (!state.filterOwner) {
+                ownerFilteredBets = state.filteredBets.filter( (bet) =>
+                bet.manager == action.payload
+                )   
+            }
+            return {
+                ...state,
+                filterOwner: !state.filterOwner,
+                ownerFilteredBets
             }
         }
         default:

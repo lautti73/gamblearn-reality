@@ -10,6 +10,7 @@ import { StoreContext } from '../store/storeProvider';
 import { useAccount } from 'wagmi';
 import axios from 'axios';
 import { APISecurity } from '../../.env.js';
+import { FilterOwner } from '../components/FilterOwner';
 
 const MyBets = ({bets}) => {
     const [{logged, bets: betsGlobal}, setConnect, {loadBets}] = useContext(StoreContext);
@@ -21,10 +22,8 @@ const MyBets = ({bets}) => {
             const body = {account: account.address}
             try {
                 const { data } = await axios.post(url, body, { auth: APISecurity })
-                console.log(data);
                 const myBetsList = data.map( (el) => el.bet);
                 const myBets = bets.filter( (bet) => myBetsList.includes(bet.betAddress));
-                console.log(myBets)
                 loadBets(myBets);
             } catch (err) {
                 console.log(err)
@@ -75,6 +74,7 @@ export async function getServerSideProps() {
         const betState = await betInstance.betState();
         const type = await betInstance.betType();
         const subtype = await betInstance.betSubtype();
+        const manager = await betInstance.manager();
         const object = {
             betAddress,
             firstTeam,
@@ -83,7 +83,8 @@ export async function getServerSideProps() {
             balance,
             betState,
             type,
-            subtype
+            subtype,
+            manager
         }
         return (JSON.parse(JSON.stringify(object)))
     }))

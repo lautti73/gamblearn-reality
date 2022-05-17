@@ -2,9 +2,13 @@ import React from 'react'
 import { AdjustmentsIcon } from '@heroicons/react/solid';
 import types from '../bet-types/types';
 import { FilterTypes } from './FilterTypes';
+import { useRouter} from 'next/router'
+import { FilterOwner } from './FilterOwner';
 // import { ModalFilters } from './ModalFilters';
 
 export const FilterBets = () => {
+    const router = useRouter();
+    // console.log('render')
     return (
         <div>
             <div className='mb-6 px-2.5 py-2 bg-white rounded shadow-md shadow-gray-300 lg:hidden'>
@@ -16,6 +20,7 @@ export const FilterBets = () => {
                 </div>
             </div>
             <aside className='w-80 px-6 py-6 mr-5 bg-white shadow-md shadow-gray-400 rounded hidden lg:block'>
+                    { router.pathname == "/my-bets" && <FilterOwner /> }
                     <div className='types mt-3'>
                     {
                         Object.keys(types).map( (el, i)  => {

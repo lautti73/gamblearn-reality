@@ -5,7 +5,7 @@ import { PageNumbers } from './PageNumbers';
 
 export const BetPagination = () => {
 
-    const [{filteredBets: bets}] = useContext(StoreContext);
+    const [{ownerFilteredBets: bets}] = useContext(StoreContext);
     const [pageNumber, setPageNumber] = useState(1);
 
     const [pagination, setPagination] = useState({
